@@ -328,7 +328,11 @@ void CAimBot::OnEnginePaint(PaintMode_t mode)
 		QAngle viewAngles;
 		g_pInterface->Engine->GetViewAngles(viewAngles);
 		Vector aimHeadOrigin = INVALID_VECTOR;
-		if (!m_bRemeberChoose || !IsValidTarget(m_pAimTarget, true))
+
+		if (m_pAimTarget != nullptr && (!m_pAimTarget->IsAlive() || !m_pAimTarget->IsValid()))
+			m_pAimTarget = nullptr;
+
+		if (!m_bRemeberChoose || m_pAimTarget == nullptr || !IsValidTarget(m_pAimTarget, true))
 			m_pAimTarget = FindTarget(viewAngles, &aimHeadOrigin);
 		else
 			aimHeadOrigin = GetTargetAimPosition(m_pAimTarget);

@@ -1,4 +1,4 @@
-#include "Knifebot.h"
+﻿#include "Knifebot.h"
 #include "../Utils/math.h"
 #include "../hook.h"
 #include "../../l4d2Simple2/config.h"
@@ -318,10 +318,10 @@ bool CKnifeBot::CheckMeleeAttack(const QAngle& myEyeAngles)
 	if (local == nullptr || !local->IsAlive())
 		return false;
 
-	static ConVar* cvShoveRange = g_pInterface->Cvar->FindVar(XorStr("z_gun_range"));
-	static ConVar* cvClawRange = g_pInterface->Cvar->FindVar(XorStr("claw_range"));
-	static ConVar* cvMeleeRange = g_pInterface->Cvar->FindVar(XorStr("melee_range"));
-	static ConVar* cvShoveCharger = g_pInterface->Cvar->FindVar(XorStr("z_charger_allow_shove"));
+	ConVar* cvShoveRange = g_pInterface->Cvar->FindVar(XorStr("z_gun_range"));
+	ConVar* cvClawRange = g_pInterface->Cvar->FindVar(XorStr("claw_range"));
+	ConVar* cvMeleeRange = g_pInterface->Cvar->FindVar(XorStr("melee_range"));
+	ConVar* cvShoveCharger = g_pInterface->Cvar->FindVar(XorStr("z_charger_allow_shove"));
 
 	int team = local->GetTeam();
 	bool canShoveCharger = (cvShoveCharger->GetInt() > 0);
