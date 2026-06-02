@@ -419,6 +419,20 @@ void CClientHook::Shutdown()
 			inst->OnShutdown();
 
 	_GameHook.clear();
+
+	g_pBunnyHop = nullptr;
+	g_pAimbot = nullptr;
+	g_pTriggerBot = nullptr;
+	g_pKnifeBot = nullptr;
+	g_pVisualPlayer = nullptr;
+	g_pVisualDrop = nullptr;
+	g_pAntiAntiCheat = nullptr;
+	g_pHackVsHack = nullptr;
+	g_pEventLogger = nullptr;
+	g_pQTE = nullptr;
+	g_pViewManager = nullptr;
+	g_pSpeedHacker = nullptr;
+	g_pWeaponConfig = nullptr;
 }
 
 void __cdecl CClientHook::Hooked_CL_Move(float accumulated_extra_samples, bool bFinalTick)
@@ -1543,9 +1557,9 @@ void __fastcall CClientHook::Hooked_LevelShutdown(IBaseClientDll* _ecx, LPVOID)
 	{
 		if(inst)
 			inst->OnDisconnect();
-
-		g_pClientHook->SaveConfig();
 	}
+
+	g_pClientHook->SaveConfig();
 
 	g_pClientHook->oLevelShutdown(_ecx);
 

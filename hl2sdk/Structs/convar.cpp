@@ -566,6 +566,7 @@ void SpoofedConvar::Spoof()
 		m_iOriginalFlags = m_pOriginalCVar->m_nFlags;
 		strcpy_s(m_szOriginalName, m_pOriginalCVar->m_pszName);
 		strcpy_s(m_szOriginalValue, m_pOriginalCVar->m_pszDefaultValue);
+		m_pszOriginalNamePtr = m_pOriginalCVar->m_pszName;
 
 		sprintf_s(m_szDummyName, XorStr("dmy_%s"), m_szOriginalName);
 
@@ -612,7 +613,7 @@ void SpoofedConvar::Unspoof()
 		strcpy((char*)m_pOriginalCVar->m_pszName, m_szOriginalName);
 		VirtualProtect((LPVOID)m_pOriginalCVar->m_pszName, 128, dwOld, &dwOld);
 		*/
-		m_pOriginalCVar->m_pszName = m_pDummyCVar->m_pszName;
+		m_pOriginalCVar->m_pszName = m_pszOriginalNamePtr;
 
 		/*
 		//Unregister dummy cvar

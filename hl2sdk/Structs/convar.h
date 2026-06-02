@@ -339,6 +339,7 @@ public:
 private:
 	ConVar* m_pOriginalCVar = nullptr;
 	ConVar* m_pDummyCVar = nullptr;
+	const char* m_pszOriginalNamePtr = nullptr;
 
 	char m_szDummyName[128];
 	char m_szDummyValue[128];

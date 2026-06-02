@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include "BaseFeatures.h"
 #include <optional>
-#include <queue>
-#include <chrono>
 
 enum AimPosition_t
 {
@@ -17,25 +15,6 @@ class CAimBot : public CBaseFeatures
 public:
 	CAimBot();
 	~CAimBot();
-
-	struct QueuedEntity_t
-	{
-		int priority = 0;
-		CBasePlayer* target = nullptr;
-		float fov = 0.0f;
-		float distance = 0.0f;
-		int tickcount = 0;
-
-		inline bool operator<(const QueuedEntity_t& t)
-		{
-			return priority < t.priority;
-		}
-
-		inline bool operator>(const QueuedEntity_t& t)
-		{
-			return priority > t.priority;
-		}
-	};
 
 	virtual void OnCreateMove(CUserCmd* cmd, bool* bSendPacket) override;
 	virtual void OnMenuDrawing() override;
@@ -99,8 +78,6 @@ private:
 	float m_fTargetFov = 0.0f;
 	float m_fTargetDistance = 0.0f;
 	int m_iEntityIndex = -1;
-
-	std::priority_queue<QueuedEntity_t> m_QueuedEntity;
 };
 
 extern CAimBot* g_pAimbot;
