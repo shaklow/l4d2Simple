@@ -261,3 +261,5 @@ __pycache__/
 *.pyc
 /hl2sdk/Structs/lagrecord.h
 /hl2sdk/Structs/lagrecord.cpp
+
+!dxsdk/Lib/x86/
