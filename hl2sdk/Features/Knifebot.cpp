@@ -1,4 +1,4 @@
-#include "Knifebot.h"
+﻿#include "Knifebot.h"
 #include "../Utils/math.h"
 #include "../hook.h"
 #include "../../l4d2Simple2/config.h"

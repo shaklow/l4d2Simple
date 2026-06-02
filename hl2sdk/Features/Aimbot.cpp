@@ -196,6 +196,9 @@ void CAimBot::OnMenuDrawing()
 	ImGui::SliderFloat(XorStr("Aimbot Probability"), &m_fAimProbability, 0.0f, 100.0f, XorStr("%.1f"));
 	IMGUI_TIPS("每颗子弹自瞄的概率，100为始终自瞄，0为从不自瞄。");
 
+	ImGui::SliderInt(XorStr("Aim Position"), &m_iAimPosition, 0, 3, XorStr("%.0f"));
+	IMGUI_TIPS("瞄准部位，0自动 1头部 2胸部 3随机。");
+
 	ImGui::Separator();
 	ImGui::Checkbox(XorStr("AutoAim Range"), &m_bShowRange);
 	IMGUI_TIPS("自动瞄准范围。");
@@ -227,6 +230,7 @@ void CAimBot::OnConfigLoading(CProfile& cfg)
 	m_fAimFov = cfg.GetFloat(mainKeys, XorStr("autoaim_fov"), m_fAimFov);
 	m_fAimDist = cfg.GetFloat(mainKeys, XorStr("autoaim_distance"), m_fAimDist);
 	m_fAimProbability = cfg.GetFloat(mainKeys, XorStr("autoaim_probability"), m_fAimProbability);
+	m_iAimPosition = cfg.GetInteger(mainKeys, XorStr("autoaim_position"), m_iAimPosition);
 	m_bShowRange = cfg.GetBoolean(mainKeys, XorStr("autoaim_show_range"), m_bShowRange);
 	m_bShowAngles = cfg.GetBoolean(mainKeys, XorStr("autoaim_show_angles"), m_bShowAngles);
 	m_bVelExt = cfg.GetBoolean(mainKeys, XorStr("autoaim_velext"), m_bVelExt);
@@ -256,6 +260,7 @@ void CAimBot::OnConfigSave(CProfile& cfg)
 	cfg.SetValue(mainKeys, XorStr("autoaim_fov"), m_fAimFov);
 	cfg.SetValue(mainKeys, XorStr("autoaim_distance"), m_fAimDist);
 	cfg.SetValue(mainKeys, XorStr("autoaim_probability"), m_fAimProbability);
+	cfg.SetValue(mainKeys, XorStr("autoaim_position"), m_iAimPosition);
 	cfg.SetValue(mainKeys, XorStr("autoaim_show_range"), m_bShowRange);
 	cfg.SetValue(mainKeys, XorStr("autoaim_show_angles"), m_bShowAngles);
 	cfg.SetValue(mainKeys, XorStr("autoaim_velext"), m_bVelExt);
@@ -663,14 +668,43 @@ Vector CAimBot::GetTargetAimPosition(CBasePlayer* entity, std::optional<bool> vi
 		return NULL_VECTOR;
 	
 	bool vis = visible.value_or(m_bVisible);
-	bool chestFirst = (m_bShotgunChest && HasShotgun(local->GetActiveWeapon()));
-	Vector aimPosition = (chestFirst ? entity->GetChestOrigin() : entity->GetHeadOrigin());
-	if (!vis || IsTargetVisible(entity, aimPosition))
-		return aimPosition;
 
-	aimPosition = (chestFirst ? entity->GetHeadOrigin() : entity->GetChestOrigin());
-	if (!vis || IsTargetVisible(entity, aimPosition))
-		return aimPosition;
+	auto aimHead = entity->GetHeadOrigin();
+	auto aimChest = entity->GetChestOrigin();
+
+	switch (m_iAimPosition)
+	{
+	case AP_Auto:
+	{
+		bool chestFirst = (m_bShotgunChest && HasShotgun(local->GetActiveWeapon()));
+		Vector aim = (chestFirst ? aimChest : aimHead);
+		if (!vis || IsTargetVisible(entity, aim))
+			return aim;
+		aim = (chestFirst ? aimHead : aimChest);
+		if (!vis || IsTargetVisible(entity, aim))
+			return aim;
+		return NULL_VECTOR;
+	}
+	case AP_Head:
+		if (!vis || IsTargetVisible(entity, aimHead))
+			return aimHead;
+		return NULL_VECTOR;
+	case AP_Chest:
+		if (!vis || IsTargetVisible(entity, aimChest))
+			return aimChest;
+		return NULL_VECTOR;
+	case AP_Random:
+	{
+		bool useHead = (std::rand() % 2) == 0;
+		Vector aim = (useHead ? aimHead : aimChest);
+		if (!vis || IsTargetVisible(entity, aim))
+			return aim;
+		aim = (useHead ? aimChest : aimHead);
+		if (!vis || IsTargetVisible(entity, aim))
+			return aim;
+		return NULL_VECTOR;
+	}
+	}
 
 	return NULL_VECTOR;
 }

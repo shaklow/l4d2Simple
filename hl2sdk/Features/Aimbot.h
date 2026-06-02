@@ -4,6 +4,14 @@
 #include <queue>
 #include <chrono>
 
+enum AimPosition_t
+{
+	AP_Auto = 0,
+	AP_Head,
+	AP_Chest,
+	AP_Random,
+};
+
 class CAimBot : public CBaseFeatures
 {
 public:
@@ -79,6 +87,7 @@ private:	// 菜单项
 	float m_fAimFov = 30.0f;
 	float m_fAimDist = 3000.0f;
 	float m_fAimProbability = 100.0f;
+	int m_iAimPosition = AP_Auto;
 	bool m_bShotgunChest = true;
 	bool m_bFatalFirst = true;
 
