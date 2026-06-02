@@ -1,4 +1,4 @@
-﻿#include "Knifebot.h"
+#include "Knifebot.h"
 #include "../Utils/math.h"
 #include "../hook.h"
 #include "../../l4d2Simple2/config.h"
@@ -109,7 +109,7 @@ void CKnifeBot::OnMenuDrawing()
 	IMGUI_TIPS("当敌人接近时自动推开/抓。");
 
 	ImGui::Checkbox(XorStr("Melee Faster"), &m_bFastMelee);
-	IMGUI_TIPS("近战武器速砍，按住 R 启动。");
+	IMGUI_TIPS("近战武器速砍，按住 M5 启动。");
 
 	ImGui::Checkbox(XorStr("Visual Only"), &m_bVisualOnly);
 	IMGUI_TIPS("只有目标看得见才触发");
