@@ -1,4 +1,4 @@
-﻿#include "Knifebot.h"
+#include "Knifebot.h"
 #include "../Utils/math.h"
 #include "../hook.h"
 #include "../../l4d2Simple2/config.h"
@@ -62,7 +62,7 @@ void CKnifeBot::OnCreateMove(CUserCmd * cmd, bool *)
 	float nextAttack = weapon->GetNextPrimaryAttack();
 	float serverTime = g_pClientPrediction->GetServerTime();
 
-	if (m_bFastMelee && team == 2 && (cmd->buttons & IN_RELOAD))
+	if (m_bFastMelee && team == 2 && (cmd->buttons & IN_ATTACK3))
 	{
 		RunFastMelee(cmd, weaponId, nextAttack, serverTime);
 		return;
