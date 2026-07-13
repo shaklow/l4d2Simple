@@ -210,6 +210,12 @@
     <ClCompile Include="..\hl2sdk\Features\ESP.cpp">
       <Filter>hl2sdk\Features</Filter>
     </ClCompile>
+    <ClCompile Include="..\hl2sdk\Features\Chams.cpp">
+      <Filter>hl2sdk\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hl2sdk\Features\Glow.cpp">
+      <Filter>hl2sdk\Features</Filter>
+    </ClCompile>
     <ClCompile Include="..\hl2sdk\Structs\baseplayer.cpp">
       <Filter>hl2sdk\Structs</Filter>
     </ClCompile>
@@ -507,6 +513,12 @@
       <Filter>hl2sdk\Features</Filter>
     </ClInclude>
     <ClInclude Include="..\hl2sdk\Features\ESP.h">
+      <Filter>hl2sdk\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hl2sdk\Features\Chams.h">
+      <Filter>hl2sdk\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hl2sdk\Features\Glow.h">
       <Filter>hl2sdk\Features</Filter>
     </ClInclude>
     <ClInclude Include="..\hl2sdk\Structs\baseplayer.h">

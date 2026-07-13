@@ -11,6 +11,8 @@
 #include "./Features/Knifebot.h"
 #include "./Features/WeaponConfig.h"
 #include "./Features/ESP.h"
+#include "./Features/Chams.h"
+#include "./Features/Glow.h"
 #include "../l4d2Simple2/vmt.h"
 #include "../l4d2Simple2/xorstr.h"
 #include "../detours/detourxs.h"
@@ -303,6 +305,13 @@ void CClientHook::InitFeature()
 		g_pKnifeBot = new CKnifeBot();
 	if (!g_pESP)
 		g_pESP = new CESP();
+	if (!g_pChams)
+		g_pChams = new CChams();
+	if (!g_pGlow)
+	{
+		g_pGlow = new CGlow();
+		g_pGlow->Install();
+	}
 
 	// 这些要排在最后，否则没有效果
 	if (!g_pViewManager)
@@ -407,6 +416,8 @@ void CClientHook::Shutdown()
 	g_pTriggerBot = nullptr;
 	g_pKnifeBot = nullptr;
 	g_pESP = nullptr;
+	g_pChams = nullptr;
+	g_pGlow = nullptr;
 	g_pViewManager = nullptr;
 	g_pWeaponConfig = nullptr;
 }
@@ -1251,7 +1262,7 @@ void __fastcall CClientHook::Hooked_DrawModelExecute(IVModelRender* _ecx, LPVOID
 	for (auto inst : g_pClientHook->_GameHook)
 		if (inst)
 			inst->OnDrawModel(const_cast<DrawModelState_t&>(state), const_cast<ModelRenderInfo_t&>(pInfo), pCustomBoneToWorld);
-	
+
 #ifdef _DEBUG
 	static bool hasFirstEnter = true;
 	if (hasFirstEnter)
@@ -1262,6 +1273,9 @@ void __fastcall CClientHook::Hooked_DrawModelExecute(IVModelRender* _ecx, LPVOID
 #endif
 
 	g_pClientHook->oDrawModelExecute(_ecx, state, pInfo, pCustomBoneToWorld);
+
+	// Clear any material override set by chams features
+	g_pInterface->ModelRender->ForcedMaterialOverride(nullptr);
 }
 
 void __fastcall CClientHook::Hooked_EmitSound(IEngineSound* _ecx, LPVOID _edx, IRecipientFilter& filter, int iEntIndex,

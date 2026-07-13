@@ -140,7 +140,9 @@
     <ClCompile Include="..\hl2sdk\Features\Aimbot.cpp" />
     <ClCompile Include="..\hl2sdk\Features\BaseFeatures.cpp" />
     <ClCompile Include="..\hl2sdk\Features\BunnyHop.cpp" />
+    <ClCompile Include="..\hl2sdk\Features\Chams.cpp" />
     <ClCompile Include="..\hl2sdk\Features\ESP.cpp" />
+    <ClCompile Include="..\hl2sdk\Features\Glow.cpp" />
     <ClCompile Include="..\hl2sdk\Features\Knifebot.cpp" />
     <ClCompile Include="..\hl2sdk\Features\NoRecoilSpread.cpp" />
     <ClCompile Include="..\hl2sdk\Features\TriggerBot.cpp" />
@@ -236,7 +238,9 @@
     <ClInclude Include="..\hl2sdk\Features\Aimbot.h" />
     <ClInclude Include="..\hl2sdk\Features\BaseFeatures.h" />
     <ClInclude Include="..\hl2sdk\Features\BunnyHop.h" />
+    <ClInclude Include="..\hl2sdk\Features\Chams.h" />
     <ClInclude Include="..\hl2sdk\Features\ESP.h" />
+    <ClInclude Include="..\hl2sdk\Features\Glow.h" />
     <ClInclude Include="..\hl2sdk\Features\Knifebot.h" />
     <ClInclude Include="..\hl2sdk\Features\NoRecoilSpread.h" />
     <ClInclude Include="..\hl2sdk\Features\TriggerBot.h" />
