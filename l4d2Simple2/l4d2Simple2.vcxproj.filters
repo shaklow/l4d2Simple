@@ -207,6 +207,9 @@
     <ClCompile Include="..\hl2sdk\Features\BunnyHop.cpp">
       <Filter>hl2sdk\Features</Filter>
     </ClCompile>
+    <ClCompile Include="..\hl2sdk\Features\ESP.cpp">
+      <Filter>hl2sdk\Features</Filter>
+    </ClCompile>
     <ClCompile Include="..\hl2sdk\Structs\baseplayer.cpp">
       <Filter>hl2sdk\Structs</Filter>
     </ClCompile>
@@ -501,6 +504,9 @@
       <Filter>ImGui\opengl</Filter>
     </ClInclude>
     <ClInclude Include="..\hl2sdk\Features\BunnyHop.h">
+      <Filter>hl2sdk\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="..\hl2sdk\Features\ESP.h">
       <Filter>hl2sdk\Features</Filter>
     </ClInclude>
     <ClInclude Include="..\hl2sdk\Structs\baseplayer.h">

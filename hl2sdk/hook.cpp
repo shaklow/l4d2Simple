@@ -10,6 +10,7 @@
 #include "./Features/NoRecoilSpread.h"
 #include "./Features/Knifebot.h"
 #include "./Features/WeaponConfig.h"
+#include "./Features/ESP.h"
 #include "../l4d2Simple2/vmt.h"
 #include "../l4d2Simple2/xorstr.h"
 #include "../detours/detourxs.h"
@@ -300,6 +301,8 @@ void CClientHook::InitFeature()
 		g_pTriggerBot = new CTriggerBot();
 	if (!g_pKnifeBot)
 		g_pKnifeBot = new CKnifeBot();
+	if (!g_pESP)
+		g_pESP = new CESP();
 
 	// 这些要排在最后，否则没有效果
 	if (!g_pViewManager)
@@ -403,6 +406,7 @@ void CClientHook::Shutdown()
 	g_pAimbot = nullptr;
 	g_pTriggerBot = nullptr;
 	g_pKnifeBot = nullptr;
+	g_pESP = nullptr;
 	g_pViewManager = nullptr;
 	g_pWeaponConfig = nullptr;
 }
