@@ -98,11 +98,13 @@ void __fastcall Redirected_Get_Glow_Color(void* Entity, void* /*edx*/, float* a2
 	if (Entity == nullptr)
 		return;
 
-	// Access glow settings via g_pGlow
-	// We use a simple approach: check the entity's class ID and team
+	// Only apply glow to special infected:
+	// AI specials have specific classID, human-controlled specials use ET_CTERRORPLAYER(232)
 	CBaseEntity* pEntity = reinterpret_cast<CBaseEntity*>(Entity);
 	if (pEntity == nullptr)
 		return;
+
+	CBasePlayer* pPlayer = reinterpret_cast<CBasePlayer*>(Entity);
 
 	int classID = 0;
 	try
@@ -114,80 +116,20 @@ void __fastcall Redirected_Get_Glow_Color(void* Entity, void* /*edx*/, float* a2
 		return;
 	}
 
-	// Valid entity types for glow (from Storm-L4D2 Get_Identifier)
-	static const int validTypes[] = { 0, 13, 99, 232, 263, 264, 265, 270, 272, 275, 276, 277 };
-	bool isValid = false;
-	for (int type : validTypes)
-	{
-		if (classID == type)
-		{
-			isValid = true;
-			break;
-		}
-	}
-
-	if (!isValid)
+	bool isSI = pPlayer->IsSpecialInfected() ||
+		(classID == ET_CTERRORPLAYER && pPlayer->GetTeam() == TEAM_INFECTED);
+	if (!isSI)
 	{
 		*a2 = *a3 = *a4 = *a5 = 0.0f;
 		return;
 	}
 
-	// Check if local player should be skipped
-	if (g_pGlow->m_bIgnoreLocal)
-	{
-		HMODULE hClientModule = GetModuleHandleW(L"client.dll");
-		if (hClientModule != nullptr)
-		{
-			uintptr_t clientBase = reinterpret_cast<uintptr_t>(hClientModule);
-			void* localPlayer = *reinterpret_cast<void**>(clientBase + LOCAL_PLAYER_PTR_OFFSET);
-			if (localPlayer == Entity)
-			{
-				*a2 = *a3 = *a4 = *a5 = 0.0f;
-				return;
-			}
-		}
-	}
+	DWORD color = g_pGlow->m_dwInfectedColor;
 
-	// Get team and ghost status
-	CBasePlayer* pPlayer = reinterpret_cast<CBasePlayer*>(Entity);
-	int team = pPlayer->GetTeam();
-	bool isGhost = pPlayer->IsGhost();
-
-	float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
-	bool shouldApply = false;
-
-	// These accesses go through g_pGlow which is a CGlow* 
-	// We need to access the private members - use friend approach or make them accessible
-	// For simplicity, we'll use the same pattern as Storm-L4D2 and access via offset
-
-	DWORD color = 0;
-
-	if (isGhost)
-	{
-		color = g_pGlow->m_dwGhostColor;
-		shouldApply = g_pGlow->m_bGhost;
-	}
-	else if (team == TEAM_SURVIVORS)
-	{
-		color = g_pGlow->m_dwSurvivorColor;
-		shouldApply = g_pGlow->m_bSurvivor;
-	}
-	else if (team == TEAM_INFECTED)
-	{
-		color = g_pGlow->m_dwInfectedColor;
-		shouldApply = g_pGlow->m_bInfected;
-	}
-
-	if (!shouldApply)
-	{
-		*a2 = *a3 = *a4 = *a5 = 0.0f;
-		return;
-	}
-
-	r = ((color >> 16) & 0xFF) / 255.0f;
-	g = ((color >> 8) & 0xFF) / 255.0f;
-	b = (color & 0xFF) / 255.0f;
-	a = ((color >> 24) & 0xFF) / 255.0f;
+	float r = ((color >> 16) & 0xFF) / 255.0f;
+	float g = ((color >> 8) & 0xFF) / 255.0f;
+	float b = (color & 0xFF) / 255.0f;
+	float a = ((color >> 24) & 0xFF) / 255.0f;
 
 	*a2 = r;
 	*a3 = g;

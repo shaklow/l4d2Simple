@@ -45,66 +45,32 @@ void CChams::OnDrawModel(DrawModelState_t& state, ModelRenderInfo_t& pInfo, matr
 	if (m_pMaterial == nullptr)
 		return;
 
-	CBaseEntity* pEntity = pInfo.pRenderable;
-	if (pEntity == nullptr)
-	{
-		if (pInfo.entity_index > 0)
-			pEntity = reinterpret_cast<CBaseEntity*>(g_pInterface->EntList->GetClientEntity(pInfo.entity_index));
-		if (pEntity == nullptr)
-			return;
-	}
-
-	if (pEntity->IsDormant())
+	// Don't use pInfo.pRenderable directly - it points to IClientRenderable (entity+0x4),
+	// not CBaseEntity (entity+0x0). Using it causes vtable offset errors and crashes.
+	if (pInfo.entity_index <= 0)
 		return;
 
-	int classID = pEntity->GetClassID();
 	int localIndex = g_pInterface->Engine->GetLocalPlayer();
-
-	DWORD color = 0;
-	bool shouldApply = false;
-
-	// Players (survivors and special infected)
-	if (classID == ET_CTERRORPLAYER || classID == ET_SURVIVORBOT)
-	{
-		if (!m_bPlayers)
-			return;
-
-		if (pInfo.entity_index == localIndex)
-			return;
-
-		CBasePlayer* pPlayer = reinterpret_cast<CBasePlayer*>(pEntity);
-		if (!pPlayer->IsAlive())
-			return;
-
-		int team = pPlayer->GetTeam();
-		if (team == TEAM_SURVIVORS)
-			color = m_dwSurvivorColor;
-		else
-			color = m_dwInfectedColor;
-
-		shouldApply = true;
-	}
-	// Common infected
-	else if (classID == ET_INFECTED)
-	{
-		if (!m_bInfected)
-			return;
-
-		color = m_dwCommonColor;
-		shouldApply = true;
-	}
-	// Witch
-	else if (classID == ET_WITCH)
-	{
-		if (!m_bInfected)
-			return;
-
-		color = D3DCOLOR_ARGB(255, 255, 100, 255);
-		shouldApply = true;
-	}
-
-	if (!shouldApply || color == 0)
+	if (pInfo.entity_index == localIndex)
 		return;
+
+	CBaseEntity* pEntity = reinterpret_cast<CBaseEntity*>(g_pInterface->EntList->GetClientEntity(pInfo.entity_index));
+	if (pEntity == nullptr || pEntity->IsDormant())
+		return;
+
+	// Only special infected:
+	// AI specials have specific classID, human-controlled specials use ET_CTERRORPLAYER(232)
+	int classID = pEntity->GetClassID();
+	CBasePlayer* pPlayer = reinterpret_cast<CBasePlayer*>(pEntity);
+	bool isSI = pPlayer->IsSpecialInfected() ||
+		(classID == ET_CTERRORPLAYER && pPlayer->GetTeam() == TEAM_INFECTED);
+	if (!isSI)
+		return;
+
+	if (!pPlayer->IsAlive())
+		return;
+
+	DWORD color = m_dwInfectedColor;
 
 	float r = ((color >> 16) & 0xFF) / 255.0f;
 	float g = ((color >> 8) & 0xFF) / 255.0f;

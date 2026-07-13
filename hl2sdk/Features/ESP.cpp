@@ -3,6 +3,7 @@
 #include "../definitions.h"
 #include "../../l4d2Simple2/drawing.h"
 #include "../../l4d2Simple2/xorstr.h"
+#include <cstdio>
 #include <algorithm>
 
 CESP* g_pESP = nullptr;
@@ -54,10 +55,12 @@ bool CESP::GetEntityBounds(CBaseEntity* pEntity, int& x, int& y, int& w, int& h)
 	vPoints[6] = Vector(mins.x, maxs.y, maxs.z);
 	vPoints[7] = Vector(maxs.x, maxs.y, maxs.z);
 
+	// Use engine DebugOverlay->ScreenPosition instead of D3D W2S
+	// D3D transforms are invalid during PAINT_UIPANELS (UI ortho projection active)
 	Vector vScreen[8];
 	for (int i = 0; i < 8; i++)
 	{
-		if (!g_pDrawing->WorldToScreen(vPoints[i], vScreen[i]))
+		if (g_pInterface->DebugOverlay->ScreenPosition(vPoints[i], vScreen[i]) != 0)
 			return false;
 	}
 
@@ -87,6 +90,21 @@ bool CESP::GetEntityBounds(CBaseEntity* pEntity, int& x, int& y, int& w, int& h)
 
 void CESP::OnEnginePaint(PaintMode_t mode)
 {
+	static int debugCounter = 0;
+	bool debugLog = false;
+	if (++debugCounter >= 300) { debugCounter = 0; debugLog = true; }
+
+	if (debugLog)
+	{
+		FILE* f = nullptr;
+		if (fopen_s(&f, "D:\\Tools_a\\AAA\\HAC\\CPC\\esp_debug.log", "a") == 0 && f)
+		{
+			fprintf(f, "=== OnEnginePaint mode=%d active=%d inGame=%d ===\n",
+				(int)mode, m_bActive ? 1 : 0, g_pInterface->Engine->IsInGame() ? 1 : 0);
+			fclose(f);
+		}
+	}
+
 	if (!m_bActive || m_bMenuOpen)
 		return;
 
@@ -111,142 +129,93 @@ void CESP::OnEnginePaint(PaintMode_t mode)
 
 		int classID = pEntity->GetClassID();
 
-		int x, y, w, h;
-		if (!GetEntityBounds(pEntity, x, y, w, h))
+		// Only special infected:
+		// AI specials have specific classID, human-controlled specials use ET_CTERRORPLAYER(232)
+		CBasePlayer* pPlayer = reinterpret_cast<CBasePlayer*>(pEntity);
+		bool isSI = pPlayer->IsSpecialInfected() ||
+			(classID == ET_CTERRORPLAYER && pPlayer->GetTeam() == TEAM_INFECTED);
+		if (!isSI)
 			continue;
 
-		// Players (survivors/special infected)
-		if (classID == ET_CTERRORPLAYER || classID == ET_SURVIVORBOT)
+		if (!pPlayer->IsAlive())
+			continue;
+
+		int x, y, w, h;
+		if (!GetEntityBounds(pEntity, x, y, w, h))
 		{
-			CBasePlayer* pPlayer = reinterpret_cast<CBasePlayer*>(pEntity);
-			if (!pPlayer->IsAlive())
-				continue;
-
-			int team = pPlayer->GetTeam();
-			bool isSurvivor = (team == TEAM_SURVIVORS);
-
-			if (m_bEnemyOnly && isSurvivor)
-				continue;
-
-			DWORD color = isSurvivor ? m_dwSurvivorColor : m_dwInfectedColor;
-
-			int health = pPlayer->GetHealth();
-			if (health < 0) health = 0;
-			if (health > 100) health = 100;
-
-			// Box
-			if (m_bBox)
+			if (debugLog)
 			{
-				g_pDrawing->DrawRect(x - 1, y - 1, w + 2, h + 2, CDrawing::BLACK);
-				g_pDrawing->DrawRect(x, y, w, h, color);
-				g_pDrawing->DrawRect(x + 1, y + 1, w - 2, h - 2, CDrawing::BLACK);
+				FILE* f = nullptr;
+				if (fopen_s(&f, "D:\\Tools_a\\AAA\\HAC\\CPC\\esp_debug.log", "a") == 0 && f)
+				{
+					fprintf(f, "  bounds failed ent=%d classID=%d\n", n, classID);
+					fclose(f);
+				}
 			}
+			continue;
+		}
 
-			// Name
-			if (m_bName)
+		if (debugLog)
+		{
+			FILE* f = nullptr;
+			if (fopen_s(&f, "D:\\Tools_a\\AAA\\HAC\\CPC\\esp_debug.log", "a") == 0 && f)
 			{
-				std::string name = pPlayer->GetName();
-				if (name.empty())
-					name = pPlayer->GetCharacterName();
-				if (name.empty())
-					name = isSurvivor ? "Survivor" : GetZombieName(classID);
-
-				g_pDrawing->DrawText(x + w / 2, y - 16, color, true, name.c_str());
-			}
-
-			// Distance
-			if (m_bDistance)
-			{
-				Vector localOrigin = pLocal->GetAbsOrigin();
-				Vector entityOrigin = pEntity->GetAbsOrigin();
-				float dist = (localOrigin - entityOrigin).Length();
-				int distM = static_cast<int>(dist * 0.01905f);
-
-				char distText[32];
-				sprintf_s(distText, "[%dM]", distM);
-				g_pDrawing->DrawText(x + w / 2, y + h + 2, CDrawing::WHITE, true, distText);
-			}
-
-			// Health bar
-			if (m_bHealthBar)
-			{
-				int barX = x - 6;
-				int barY = y;
-				int barW = 3;
-				int barH = h;
-
-				g_pDrawing->DrawRectFilled(barX - 1, barY - 1, barW + 2, barH + 2, CDrawing::BLACK);
-
-				float ratio = health / 100.0f;
-				int fillH = static_cast<int>(barH * ratio);
-				DWORD healthColor = D3DCOLOR_ARGB(255,
-					static_cast<int>(255 * (1.0f - ratio)),
-					static_cast<int>(255 * ratio),
-					0);
-				g_pDrawing->DrawRectFilled(barX, barY + barH - fillH, barW, fillH, healthColor);
+				fprintf(f, "  drawing ent=%d classID=%d x=%d y=%d w=%d h=%d\n", n, classID, x, y, w, h);
+				fclose(f);
 			}
 		}
-		// Common infected
-		else if (classID == ET_INFECTED)
+
+		DWORD color = m_dwInfectedColor;
+
+		int health = pPlayer->GetHealth();
+		if (health < 0) health = 0;
+		if (health > 100) health = 100;
+
+		// Box
+		if (m_bBox)
 		{
-			if (m_bEnemyOnly)
-				continue;
-
-			DWORD color = m_dwCommonColor;
-
-			if (m_bBox)
-			{
-				g_pDrawing->DrawRect(x - 1, y - 1, w + 2, h + 2, CDrawing::BLACK);
-				g_pDrawing->DrawRect(x, y, w, h, color);
-			}
-
-			if (m_bName)
-			{
-				g_pDrawing->DrawText(x + w / 2, y - 16, color, true, "Infected");
-			}
-
-			if (m_bDistance)
-			{
-				Vector localOrigin = pLocal->GetAbsOrigin();
-				Vector entityOrigin = pEntity->GetAbsOrigin();
-				float dist = (localOrigin - entityOrigin).Length();
-				int distM = static_cast<int>(dist * 0.01905f);
-
-				char distText[32];
-				sprintf_s(distText, "[%dM]", distM);
-				g_pDrawing->DrawText(x + w / 2, y + h + 2, CDrawing::WHITE, true, distText);
-			}
+			g_pDrawing->DrawRect(x - 1, y - 1, w + 2, h + 2, CDrawing::BLACK);
+			g_pDrawing->DrawRect(x, y, w, h, color);
+			g_pDrawing->DrawRect(x + 1, y + 1, w - 2, h - 2, CDrawing::BLACK);
 		}
-		// Witch
-		else if (classID == ET_WITCH)
+
+		// Name
+		if (m_bName)
 		{
-			if (m_bEnemyOnly)
-				continue;
+			const char* zombieName = GetZombieName(classID);
+			g_pDrawing->DrawText(x + w / 2, y - 16, color, true, zombieName);
+		}
 
-			DWORD color = D3DCOLOR_ARGB(255, 255, 100, 255);
+		// Distance
+		if (m_bDistance)
+		{
+			Vector localOrigin = pLocal->GetAbsOrigin();
+			Vector entityOrigin = pEntity->GetAbsOrigin();
+			float dist = (localOrigin - entityOrigin).Length();
+			int distM = static_cast<int>(dist * 0.01905f);
 
-			if (m_bBox)
-			{
-				g_pDrawing->DrawRect(x - 1, y - 1, w + 2, h + 2, CDrawing::BLACK);
-				g_pDrawing->DrawRect(x, y, w, h, color);
-			}
+			char distText[32];
+			sprintf_s(distText, "[%dM]", distM);
+			g_pDrawing->DrawText(x + w / 2, y + h + 2, CDrawing::WHITE, true, distText);
+		}
 
-			if (m_bName)
-			{
-				g_pDrawing->DrawText(x + w / 2, y - 16, color, true, "Witch");
-			}
+		// Health bar
+		if (m_bHealthBar)
+		{
+			int barX = x - 6;
+			int barY = y;
+			int barW = 3;
+			int barH = h;
 
-			if (m_bDistance)
-			{
-				Vector localOrigin = pLocal->GetAbsOrigin();
-				Vector entityOrigin = pEntity->GetAbsOrigin();
-				float dist = (localOrigin - entityOrigin).Length();
-				int distM = static_cast<int>(dist * 0.01905f);
+			g_pDrawing->DrawRectFilled(barX - 1, barY - 1, barW + 2, barH + 2, CDrawing::BLACK);
 
-				char distText[32];
-				sprintf_s(distText, "[%dM]", distM);
-				g_pDrawing->DrawText(x + w / 2, y + h + 2, CDrawing::WHITE, true, distText);
-			}
+			float ratio = health / 100.0f;
+			int fillH = static_cast<int>(barH * ratio);
+			DWORD healthColor = D3DCOLOR_ARGB(255,
+				static_cast<int>(255 * (1.0f - ratio)),
+				static_cast<int>(255 * ratio),
+				0);
+			g_pDrawing->DrawRectFilled(barX, barY + barH - fillH, barW, fillH, healthColor);
 		}
 	}
 }
