@@ -1,21 +1,14 @@
-﻿#include "hook.h"
+#include "hook.h"
 #include "indexes.h"
 #include "./Utils/math.h"
 #include "./Utils/checksum_md5.h"
 #include "./Structs/convar.h"
 #include "./Structs/baseplayerresource.h"
 #include "./Features/BunnyHop.h"
-#include "./Features/SpeedHacker.h"
 #include "./Features/TriggerBot.h"
 #include "./Features/Aimbot.h"
 #include "./Features/NoRecoilSpread.h"
 #include "./Features/Knifebot.h"
-#include "./Features/Visual.h"
-#include "./Features/DropVisual.h"
-#include "./Features/AntiAntiCheat.h"
-#include "./Features/HackvsHack.h"
-#include "./Features/EventLogger.h"
-#include "./Features/QTE.h"
 #include "./Features/WeaponConfig.h"
 #include "../l4d2Simple2/vmt.h"
 #include "../l4d2Simple2/xorstr.h"
@@ -307,24 +300,10 @@ void CClientHook::InitFeature()
 		g_pTriggerBot = new CTriggerBot();
 	if (!g_pKnifeBot)
 		g_pKnifeBot = new CKnifeBot();
-	if (!g_pVisualPlayer)
-		g_pVisualPlayer = new CVisualPlayer();
-	if (!g_pVisualDrop)
-		g_pVisualDrop = new CVisualDrop();
-	if (!g_pAntiAntiCheat)
-		g_pAntiAntiCheat = new CAntiAntiCheat();
-	if (!g_pHackVsHack)
-		g_pHackVsHack = new CHackVSHack();
-	if (!g_pEventLogger)
-		g_pEventLogger = new CEventLogger();
-	if (!g_pQTE)
-		g_pQTE = new CQuickTriggerEvent();
 
 	// 这些要排在最后，否则没有效果
 	if (!g_pViewManager)
 		g_pViewManager = new CViewManager();
-	if (!g_pSpeedHacker)
-		g_pSpeedHacker = new CSpeedHacker();
 	if (!g_pWeaponConfig)
 		g_pWeaponConfig = new CWeaponConfig();
 }
@@ -424,14 +403,7 @@ void CClientHook::Shutdown()
 	g_pAimbot = nullptr;
 	g_pTriggerBot = nullptr;
 	g_pKnifeBot = nullptr;
-	g_pVisualPlayer = nullptr;
-	g_pVisualDrop = nullptr;
-	g_pAntiAntiCheat = nullptr;
-	g_pHackVsHack = nullptr;
-	g_pEventLogger = nullptr;
-	g_pQTE = nullptr;
 	g_pViewManager = nullptr;
-	g_pSpeedHacker = nullptr;
 	g_pWeaponConfig = nullptr;
 }
 

@@ -70,6 +70,9 @@ private:	// 菜单项
 	bool m_bShotgunChest = true;
 	bool m_bFatalFirst = true;
 
+	bool m_bRandomOffset = false;
+	float m_fRandomOffsetRange = 2.0f;
+
 private:
 	CBasePlayer* m_pAimTarget = nullptr;
 	QAngle m_vecAimAngles;

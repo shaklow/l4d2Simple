@@ -1,6 +1,7 @@
 ﻿#include "Knifebot.h"
 #include "../Utils/math.h"
 #include "../hook.h"
+#include "../interfaces.h"
 #include "../../l4d2Simple2/config.h"
 
 CKnifeBot* g_pKnifeBot = nullptr;
@@ -62,7 +63,8 @@ void CKnifeBot::OnCreateMove(CUserCmd * cmd, bool *)
 	float nextAttack = weapon->GetNextPrimaryAttack();
 	float serverTime = g_pClientPrediction->GetServerTime();
 
-	if (m_bFastMelee && team == 2 && (cmd->buttons & IN_ATTACK3))
+	bool m5Pressed = (g_pInterface->InputSystem != nullptr && g_pInterface->InputSystem->IsButtonDown(MOUSE_5));
+	if (m_bFastMelee && team == 2 && m5Pressed)
 	{
 		RunFastMelee(cmd, weaponId, nextAttack, serverTime);
 		return;

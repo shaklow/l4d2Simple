@@ -99,6 +99,14 @@ void CAimBot::OnCreateMove(CUserCmd * cmd, bool * bSendPacket)
 		aimHeadOrigin = math::VelocityExtrapolate(aimHeadOrigin, m_pAimTarget->GetVelocity(), m_bForwardtrack);
 	}
 
+	if (m_bRandomOffset && m_fRandomOffsetRange > 0.0f)
+	{
+		float range = m_fRandomOffsetRange;
+		aimHeadOrigin.x += (static_cast<float>(std::rand()) / RAND_MAX * 2.0f - 1.0f) * range;
+		aimHeadOrigin.y += (static_cast<float>(std::rand()) / RAND_MAX * 2.0f - 1.0f) * range;
+		aimHeadOrigin.z += (static_cast<float>(std::rand()) / RAND_MAX * 2.0f - 1.0f) * range;
+	}
+
 	m_vecAimAngles = math::CalculateAim(myEyeOrigin, aimHeadOrigin);
 	// m_vecAimAngles = (m_pAimTarget->GetHeadOrigin() - local->GetEyePosition()).Normalize().toAngles();
 
@@ -199,6 +207,12 @@ void CAimBot::OnMenuDrawing()
 	ImGui::SliderInt(XorStr("Aim Position"), &m_iAimPosition, 0, 3, XorStr("%.0f"));
 	IMGUI_TIPS("瞄准部位，0自动 1头部 2胸部 3随机。");
 
+	ImGui::Checkbox(XorStr("Random Offset"), &m_bRandomOffset);
+	IMGUI_TIPS("自瞄位置随机偏移，降低爆头率，使自瞄更自然。");
+
+	ImGui::SliderFloat(XorStr("Offset Range"), &m_fRandomOffsetRange, 0.0f, 20.0f, XorStr("%.1f"));
+	IMGUI_TIPS("随机偏移范围（单位：游戏单位），数值越大偏差越大。");
+
 	ImGui::Separator();
 	ImGui::Checkbox(XorStr("AutoAim Range"), &m_bShowRange);
 	IMGUI_TIPS("自动瞄准范围。");
@@ -231,6 +245,8 @@ void CAimBot::OnConfigLoading(CProfile& cfg)
 	m_fAimDist = cfg.GetFloat(mainKeys, XorStr("autoaim_distance"), m_fAimDist);
 	m_fAimProbability = cfg.GetFloat(mainKeys, XorStr("autoaim_probability"), m_fAimProbability);
 	m_iAimPosition = cfg.GetInteger(mainKeys, XorStr("autoaim_position"), m_iAimPosition);
+	m_bRandomOffset = cfg.GetBoolean(mainKeys, XorStr("autoaim_random_offset"), m_bRandomOffset);
+	m_fRandomOffsetRange = cfg.GetFloat(mainKeys, XorStr("autoaim_random_offset_range"), m_fRandomOffsetRange);
 	m_bShowRange = cfg.GetBoolean(mainKeys, XorStr("autoaim_show_range"), m_bShowRange);
 	m_bShowAngles = cfg.GetBoolean(mainKeys, XorStr("autoaim_show_angles"), m_bShowAngles);
 	m_bVelExt = cfg.GetBoolean(mainKeys, XorStr("autoaim_velext"), m_bVelExt);
@@ -261,6 +277,8 @@ void CAimBot::OnConfigSave(CProfile& cfg)
 	cfg.SetValue(mainKeys, XorStr("autoaim_distance"), m_fAimDist);
 	cfg.SetValue(mainKeys, XorStr("autoaim_probability"), m_fAimProbability);
 	cfg.SetValue(mainKeys, XorStr("autoaim_position"), m_iAimPosition);
+	cfg.SetValue(mainKeys, XorStr("autoaim_random_offset"), m_bRandomOffset);
+	cfg.SetValue(mainKeys, XorStr("autoaim_random_offset_range"), m_fRandomOffsetRange);
 	cfg.SetValue(mainKeys, XorStr("autoaim_show_range"), m_bShowRange);
 	cfg.SetValue(mainKeys, XorStr("autoaim_show_angles"), m_bShowAngles);
 	cfg.SetValue(mainKeys, XorStr("autoaim_velext"), m_bVelExt);

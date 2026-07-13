@@ -1,4 +1,4 @@
-﻿#include <Windows.h>
+#include <Windows.h>
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -7,7 +7,6 @@
 #include "utils.h"
 #include "xorstr.h"
 #include "menu.h"
-#include "speedhack.h"
 #include "config.h"
 #include "console.h"
 #include "../hl2sdk/interfaces.h"
@@ -61,7 +60,6 @@ BOOL WINAPI DllMain(HINSTANCE module, DWORD reason, LPVOID reserved)
 
 		g_pClientHook->Shutdown();
 		g_pDirextXHook->Shutdown();
-		g_pSpeedModifier->Shutdown();
 		g_pConfig->CloseFile();
 	}
 
@@ -97,9 +95,6 @@ DWORD WINAPI StartCheats(LPVOID module)
 	g_pConfig = std::make_unique<CProfile>();
 	g_pConfig->OpenFile(Utils::BuildPath(XorStr("setting.ini")));
 	g_pConfig->LoadFromFile();
-
-	g_pSpeedModifier = std::make_unique<CSpeedModifier>();
-	g_pSpeedModifier->Init();
 
 	g_pInterface = std::make_unique<CClientInterface>();
 	g_pInterface->Init();

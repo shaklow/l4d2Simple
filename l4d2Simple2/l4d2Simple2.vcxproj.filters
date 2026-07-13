@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="源文件">
@@ -201,23 +201,17 @@
     <ClCompile Include="..\hl2sdk\Features\BaseFeatures.cpp">
       <Filter>hl2sdk\Features</Filter>
     </ClCompile>
-    <ClCompile Include="..\hl2sdk\Features\BunnyHop.cpp">
-      <Filter>hl2sdk\Features</Filter>
-    </ClCompile>
     <ClCompile Include="..\hl2sdk\Interfaces\IUniformRandomStream.cpp">
       <Filter>hl2sdk\Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="speedhack.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="..\hl2sdk\Features\BunnyHop.cpp">
+      <Filter>hl2sdk\Features</Filter>
     </ClCompile>
     <ClCompile Include="..\hl2sdk\Structs\baseplayer.cpp">
       <Filter>hl2sdk\Structs</Filter>
     </ClCompile>
     <ClCompile Include="..\hl2sdk\Structs\baseweapon.cpp">
       <Filter>hl2sdk\Structs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\hl2sdk\Features\SpeedHacker.cpp">
-      <Filter>hl2sdk\Features</Filter>
     </ClCompile>
     <ClCompile Include="..\hl2sdk\Features\TriggerBot.cpp">
       <Filter>hl2sdk\Features</Filter>
@@ -231,20 +225,11 @@
     <ClCompile Include="..\hl2sdk\Features\Knifebot.cpp">
       <Filter>hl2sdk\Features</Filter>
     </ClCompile>
-    <ClCompile Include="..\hl2sdk\Features\Visual.cpp">
-      <Filter>hl2sdk\Features</Filter>
-    </ClCompile>
     <ClCompile Include="..\hl2sdk\Utils\math.cpp">
       <Filter>hl2sdk\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\hl2sdk\Features\DropVisual.cpp">
-      <Filter>hl2sdk\Features</Filter>
-    </ClCompile>
     <ClCompile Include="config.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\hl2sdk\Features\AntiAntiCheat.cpp">
-      <Filter>hl2sdk\Features</Filter>
     </ClCompile>
     <ClCompile Include="console.cpp">
       <Filter>源文件</Filter>
@@ -252,17 +237,8 @@
     <ClCompile Include="..\hl2sdk\Structs\baseplayerresource.cpp">
       <Filter>hl2sdk\Structs</Filter>
     </ClCompile>
-    <ClCompile Include="..\hl2sdk\Features\HackvsHack.cpp">
-      <Filter>hl2sdk\Features</Filter>
-    </ClCompile>
-    <ClCompile Include="..\hl2sdk\Features\EventLogger.cpp">
-      <Filter>hl2sdk\Features</Filter>
-    </ClCompile>
     <ClCompile Include="..\hl2sdk\Structs\keyvalues.cpp">
       <Filter>hl2sdk\Structs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\hl2sdk\Features\QTE.cpp">
-      <Filter>hl2sdk\Features</Filter>
     </ClCompile>
     <ClCompile Include="..\hl2sdk\Structs\MRecipientFilter.cpp">
       <Filter>hl2sdk\Structs</Filter>
@@ -521,23 +497,17 @@
     <ClInclude Include="..\hl2sdk\Features\BaseFeatures.h">
       <Filter>hl2sdk\Features</Filter>
     </ClInclude>
-    <ClInclude Include="..\hl2sdk\Features\BunnyHop.h">
-      <Filter>hl2sdk\Features</Filter>
-    </ClInclude>
     <ClInclude Include="..\imgui\examples\opengl2_example\imgui_impl_glfw.h">
       <Filter>ImGui\opengl</Filter>
     </ClInclude>
-    <ClInclude Include="speedhack.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="..\hl2sdk\Features\BunnyHop.h">
+      <Filter>hl2sdk\Features</Filter>
     </ClInclude>
     <ClInclude Include="..\hl2sdk\Structs\baseplayer.h">
       <Filter>hl2sdk\Structs</Filter>
     </ClInclude>
     <ClInclude Include="..\hl2sdk\Structs\baseweapon.h">
       <Filter>hl2sdk\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\hl2sdk\Features\SpeedHacker.h">
-      <Filter>hl2sdk\Features</Filter>
     </ClInclude>
     <ClInclude Include="..\hl2sdk\Features\TriggerBot.h">
       <Filter>hl2sdk\Features</Filter>
@@ -551,14 +521,8 @@
     <ClInclude Include="..\hl2sdk\Features\Knifebot.h">
       <Filter>hl2sdk\Features</Filter>
     </ClInclude>
-    <ClInclude Include="..\hl2sdk\Features\Visual.h">
-      <Filter>hl2sdk\Features</Filter>
-    </ClInclude>
     <ClInclude Include="..\hl2sdk\Utils\math.h">
       <Filter>hl2sdk\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\hl2sdk\Features\DropVisual.h">
-      <Filter>hl2sdk\Features</Filter>
     </ClInclude>
     <ClInclude Include="..\ADVobfuscator\Indexes.h">
       <Filter>ADVobfuscator</Filter>
@@ -590,20 +554,11 @@
     <ClInclude Include="config.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\hl2sdk\Features\AntiAntiCheat.h">
-      <Filter>hl2sdk\Features</Filter>
-    </ClInclude>
     <ClInclude Include="console.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\hl2sdk\Structs\baseplayerresource.h">
       <Filter>hl2sdk\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\hl2sdk\Features\HackvsHack.h">
-      <Filter>hl2sdk\Features</Filter>
-    </ClInclude>
-    <ClInclude Include="..\hl2sdk\Features\EventLogger.h">
-      <Filter>hl2sdk\Features</Filter>
     </ClInclude>
     <ClInclude Include="..\hl2sdk\Interfaces\IEngineSound.h">
       <Filter>hl2sdk\Interfaces</Filter>
@@ -628,9 +583,6 @@
     </ClInclude>
     <ClInclude Include="..\hl2sdk\Utils\utlfixedmemory.h">
       <Filter>hl2sdk\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\hl2sdk\Features\QTE.h">
-      <Filter>hl2sdk\Features</Filter>
     </ClInclude>
     <ClInclude Include="..\dxsdk\Include\d3d9.h">
       <Filter>dxsdk\include</Filter>
